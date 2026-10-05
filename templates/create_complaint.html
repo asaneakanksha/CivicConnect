@@ -1,0 +1,464 @@
+{% extends "base.html" %}
+
+{% block title %}Report an Issue - CivicConnect{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <div class="breadcrumb">
+            <a href="{{ url_for('citizen_dashboard') }}">Dashboard</a>
+            <span>/</span>
+            <span>Report Issue</span>
+        </div>
+
+        <h1>Report a Public Issue</h1>
+        <p>Help your community by reporting a civic problem.</p>
+    </div>
+
+    <a href="{{ url_for('citizen_dashboard') }}" class="btn btn-secondary">
+        ← Back to Dashboard
+    </a>
+</div>
+
+
+<div class="form-layout">
+
+    <!-- MAIN FORM -->
+    <div class="card form-card">
+
+        <div class="form-card-header">
+            <div class="form-icon">📢</div>
+            <div>
+                <h2>Issue Details</h2>
+                <p>Please provide accurate information about the problem.</p>
+            </div>
+        </div>
+
+
+        <form method="POST"
+              action="{{ url_for('create_complaint') }}"
+              enctype="multipart/form-data">
+
+            <!-- TITLE -->
+            <div class="form-group">
+                <label for="title">
+                    Issue Title <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    class="form-control"
+                    placeholder="Example: Large pothole near main road"
+                    required
+                    maxlength="150"
+                >
+
+                <small class="form-help">
+                    Give your complaint a short and clear title.
+                </small>
+            </div>
+
+
+            <!-- ISSUE TYPE -->
+            <div class="form-group">
+                <label for="issue_type">
+                    Issue Type <span class="required">*</span>
+                </label>
+
+                <select
+                    id="issue_type"
+                    name="issue_type"
+                    class="form-control"
+                    required
+                >
+                    <option value="">Select issue type</option>
+                    <option value="Pothole">Pothole</option>
+                    <option value="Garbage">Garbage / Waste</option>
+                    <option value="Water Leakage">Water Leakage</option>
+                    <option value="Streetlight">Streetlight</option>
+                    <option value="Drainage">Drainage</option>
+                    <option value="Open Manhole">Open Manhole</option>
+                    <option value="Road Damage">Road Damage</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+
+            <!-- DESCRIPTION -->
+            <div class="form-group">
+                <label for="description">
+                    Description <span class="required">*</span>
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    class="form-control"
+                    rows="6"
+                    placeholder="Describe the issue in detail..."
+                    required
+                ></textarea>
+
+                <small class="form-help">
+                    Mention important details such as the severity,
+                    nearby landmarks, or how the issue affects people.
+                </small>
+            </div>
+
+
+            <!-- LOCATION -->
+            <div class="form-group">
+                <label for="location">
+                    Location <span class="required">*</span>
+                </label>
+
+                <div class="input-with-icon">
+                    <span class="input-icon">📍</span>
+
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        class="form-control"
+                        placeholder="Enter the exact location"
+                        required
+                        maxlength="255"
+                    >
+                </div>
+
+                <small class="form-help">
+                    Example: MG Road, near City Mall, Pune.
+                </small>
+            </div>
+
+
+            <!-- DEPARTMENT -->
+            <div class="form-group">
+                <label for="department_id">
+                    Department
+                </label>
+
+                <select
+                    id="department_id"
+                    name="department_id"
+                    class="form-control"
+                >
+                    <option value="">Select department</option>
+
+                    {% for department in departments %}
+                        <option value="{{ department.id }}">
+                            {{ department.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <small class="form-help">
+                    If you know the responsible department, select it.
+                </small>
+            </div>
+
+
+            <!-- PRIORITY -->
+            <div class="form-group">
+                <label for="priority">
+                    Priority
+                </label>
+
+                <select
+                    id="priority"
+                    name="priority"
+                    class="form-control"
+                >
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                </select>
+
+                <small class="form-help">
+                    Select High only when the issue requires urgent
+                    municipal attention.
+                </small>
+            </div>
+
+
+            <!-- IMAGE -->
+            <div class="form-group">
+                <label for="image">
+                    Upload Photo
+                </label>
+
+                <div class="upload-area" id="uploadArea">
+
+                    <div class="upload-icon">
+                        📷
+                    </div>
+
+                    <div class="upload-content">
+                        <strong>Upload an image of the issue</strong>
+
+                        <p>
+                            JPG, JPEG, PNG or WEBP
+                            <br>
+                            Maximum size: 5 MB
+                        </p>
+                    </div>
+
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                        onchange="previewComplaintImage(this)"
+                    >
+
+                    <label for="image" class="btn btn-secondary upload-btn">
+                        Choose Image
+                    </label>
+
+                </div>
+
+
+                <!-- FILE NAME -->
+                <div id="selectedFile" class="selected-file" style="display:none;">
+                    <span>📎</span>
+                    <span id="fileName"></span>
+                    <button
+                        type="button"
+                        onclick="removeComplaintImage()"
+                        class="remove-file"
+                    >
+                        ×
+                    </button>
+                </div>
+
+
+                <!-- IMAGE PREVIEW -->
+                <div id="imagePreviewContainer"
+                     class="image-preview-container"
+                     style="display:none;">
+
+                    <img
+                        id="imagePreview"
+                        src=""
+                        alt="Complaint image preview"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- FORM ACTIONS -->
+            <div class="form-actions">
+
+                <a
+                    href="{{ url_for('citizen_dashboard') }}"
+                    class="btn btn-secondary"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    🚀 Submit Complaint
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- RIGHT INFORMATION CARD -->
+    <div class="side-content">
+
+        <div class="card info-card">
+
+            <div class="info-card-icon">
+                💡
+            </div>
+
+            <h3>How to report effectively</h3>
+
+            <div class="info-step">
+                <span>1</span>
+                <div>
+                    <strong>Describe clearly</strong>
+                    <p>
+                        Explain exactly what the problem is.
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-step">
+                <span>2</span>
+                <div>
+                    <strong>Add the location</strong>
+                    <p>
+                        Provide a precise location or nearby landmark.
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-step">
+                <span>3</span>
+                <div>
+                    <strong>Upload a photo</strong>
+                    <p>
+                        A clear photo can help officials understand
+                        the issue faster.
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-step">
+                <span>4</span>
+                <div>
+                    <strong>Track your complaint</strong>
+                    <p>
+                        After submission, you can monitor its status
+                        from your dashboard.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- PRIVACY CARD -->
+        <div class="card safety-card">
+
+            <div class="safety-icon">
+                🔒
+            </div>
+
+            <div>
+                <h3>Your Report Matters</h3>
+
+                <p>
+                    Your complaint will be reviewed by the concerned
+                    municipal authorities and tracked through CivicConnect.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function previewComplaintImage(input) {
+
+    const file = input.files[0];
+
+    const selectedFile = document.getElementById("selectedFile");
+    const fileName = document.getElementById("fileName");
+
+    const previewContainer =
+        document.getElementById("imagePreviewContainer");
+
+    const preview =
+        document.getElementById("imagePreview");
+
+
+    if (!file) {
+        selectedFile.style.display = "none";
+        previewContainer.style.display = "none";
+        return;
+    }
+
+
+    /* FILE SIZE CHECK */
+
+    const maxSize = 5 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+
+        alert("Image size must be less than 5 MB.");
+
+        input.value = "";
+
+        selectedFile.style.display = "none";
+        previewContainer.style.display = "none";
+
+        return;
+    }
+
+
+    /* FILE TYPE CHECK */
+
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+
+        alert("Please upload a JPG, JPEG, PNG or WEBP image.");
+
+        input.value = "";
+
+        selectedFile.style.display = "none";
+        previewContainer.style.display = "none";
+
+        return;
+    }
+
+
+    /* SHOW FILE NAME */
+
+    fileName.textContent = file.name;
+    selectedFile.style.display = "flex";
+
+
+    /* SHOW PREVIEW */
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+
+        preview.src = e.target.result;
+
+        previewContainer.style.display = "block";
+    };
+
+    reader.readAsDataURL(file);
+}
+
+
+function removeComplaintImage() {
+
+    const input = document.getElementById("image");
+
+    const selectedFile =
+        document.getElementById("selectedFile");
+
+    const previewContainer =
+        document.getElementById("imagePreviewContainer");
+
+    const preview =
+        document.getElementById("imagePreview");
+
+
+    input.value = "";
+
+    selectedFile.style.display = "none";
+
+    previewContainer.style.display = "none";
+
+    preview.src = "";
+}
+
+</script>
+
+{% endblock %}

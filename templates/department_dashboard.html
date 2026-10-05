@@ -1,0 +1,1358 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CivicConnect | Department Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #111827, #1e293b);
+            color: white;
+            padding: 25px 16px;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px 28px;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+            margin-bottom: 22px;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #2563eb;
+            font-size: 21px;
+        }
+
+        .brand h4 {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .brand small {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .nav-title {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 12px;
+            margin: 18px 0 8px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #cbd5e1;
+            padding: 12px 13px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            transition: .2s;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255,255,255,.08);
+            color: white;
+            transform: translateX(3px);
+        }
+
+        .sidebar a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .logout-link {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 20px;
+            color: #fca5a5 !important;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 76px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+
+        .page-title h3 {
+            margin: 0;
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .page-title p {
+            margin: 3px 0 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .profile strong {
+            font-size: 14px;
+        }
+
+        .profile small {
+            display: block;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        /* ================= DEPARTMENT HEADER ================= */
+
+        .department-banner {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border-radius: 18px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(37,99,235,.18);
+        }
+
+        .department-banner h2 {
+            font-size: 24px;
+            font-weight: 750;
+            margin-bottom: 5px;
+        }
+
+        .department-banner p {
+            margin: 0;
+            opacity: .85;
+            font-size: 13px;
+        }
+
+        .department-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(255,255,255,.15);
+            padding: 7px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            margin-top: 15px;
+        }
+
+        /* ================= STAT CARDS ================= */
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
+            height: 100%;
+            transition: .25s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(15,23,42,.08);
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-card h2 {
+            margin: 13px 0 2px;
+            font-size: 27px;
+            font-weight: 750;
+        }
+
+        .stat-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* ================= SECTION ================= */
+
+        .section-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 20px 22px;
+            border-bottom: 1px solid #edf0f4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-header h5 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .section-header p {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        /* ================= FILTERS ================= */
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 240px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 13px;
+            top: 11px;
+            color: #94a3b8;
+        }
+
+        .search-box input {
+            height: 40px;
+            padding-left: 38px;
+            border-radius: 10px;
+            border: 1px solid #dbe1e8;
+        }
+
+        .filter-select {
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid #dbe1e8;
+            min-width: 130px;
+        }
+
+        /* ================= COMPLAINT CARDS ================= */
+
+        .complaints-container {
+            padding: 20px;
+        }
+
+        .complaint-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 13px;
+            transition: .2s;
+            background: white;
+        }
+
+        .complaint-card:hover {
+            border-color: #bfdbfe;
+            box-shadow: 0 7px 20px rgba(15,23,42,.06);
+            transform: translateY(-2px);
+        }
+
+        .complaint-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .complaint-id {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .complaint-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 3px 0;
+        }
+
+        .complaint-type {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .complaint-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .complaint-info span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* ================= BADGES ================= */
+
+        .status-badge,
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 10px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .status-assigned {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .status-progress {
+            background: #fefce8;
+            color: #a16207;
+        }
+
+        .status-resolved {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .status-closed {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .priority-high {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .priority-medium {
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .priority-low {
+            background: #ecfdf5;
+            color: #059669;
+        }
+
+        /* ================= ACTION ================= */
+
+        .action-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        .view-btn {
+            border: none;
+            background: #eff6ff;
+            color: #2563eb;
+            border-radius: 9px;
+            padding: 8px 13px;
+            font-size: 12px;
+            font-weight: 650;
+            text-decoration: none;
+            transition: .2s;
+        }
+
+        .view-btn:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            display: block;
+            font-size: 45px;
+            color: #cbd5e1;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h5 {
+            color: #334155;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width: 900px) {
+
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                margin-left: 210px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+
+        @media(max-width: 700px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .logout-link {
+                position: relative;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                margin-top: 15px;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .topbar {
+                padding: 0 18px;
+            }
+
+            .profile > div {
+                display: none;
+            }
+
+            .content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            <i class="bi bi-buildings"></i>
+        </div>
+
+        <div>
+            <h4>CivicConnect</h4>
+            <small>Department Portal</small>
+        </div>
+
+    </div>
+
+
+    <div class="nav-title">
+        Department
+    </div>
+
+
+    <a href="#" class="active">
+        <i class="bi bi-grid-1x2-fill"></i>
+        Dashboard
+    </a>
+
+
+    <a href="#complaints">
+        <i class="bi bi-clipboard2-pulse"></i>
+        Complaints
+    </a>
+
+
+    <a href="#resolved">
+        <i class="bi bi-check2-circle"></i>
+        Resolved
+    </a>
+
+
+    <div class="nav-title">
+        Account
+    </div>
+
+
+    <a href="#">
+        <i class="bi bi-person-circle"></i>
+        Profile
+    </a>
+
+
+    <a href="#" class="logout-link">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+    </a>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <div class="page-title">
+
+            <h3>Department Dashboard</h3>
+
+            <p>
+                Manage and resolve assigned civic complaints
+            </p>
+
+        </div>
+
+
+        <div class="profile">
+
+            <div class="avatar">
+                D
+            </div>
+
+            <div>
+
+                <strong>Department Officer</strong>
+
+                <small>
+                    Municipal Department
+                </small>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <section class="content">
+
+
+        <!-- ================= DEPARTMENT BANNER ================= -->
+
+        <div class="department-banner">
+
+            <h2>
+                <i class="bi bi-building me-2"></i>
+                Municipal Department
+            </h2>
+
+            <p>
+                All complaints assigned to your department are displayed here.
+            </p>
+
+            <span class="department-tag">
+                <i class="bi bi-shield-check"></i>
+                Official Department Workspace
+            </span>
+
+        </div>
+
+
+        <!-- ================= STATISTICS ================= -->
+
+        <div class="row g-3 mb-4">
+
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="bi bi-clipboard2"></i>
+                    </div>
+
+                    <h2 id="totalCount">0</h2>
+
+                    <p>
+                        Total Complaints
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+
+                    <h2 id="pendingCount">0</h2>
+
+                    <p>
+                        Pending
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </div>
+
+                    <h2 id="progressCount">0</h2>
+
+                    <p>
+                        In Progress
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+
+                    <h2 id="resolvedCount">0</h2>
+
+                    <p>
+                        Resolved
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= COMPLAINTS ================= -->
+
+        <div class="section-card" id="complaints">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <h5>
+                        <i class="bi bi-clipboard2-pulse me-2"></i>
+                        Department Complaints
+                    </h5>
+
+                    <p>
+                        Complaints requiring department action
+                    </p>
+
+                </div>
+
+
+                <div class="filters">
+
+                    <div class="search-box">
+
+                        <i class="bi bi-search"></i>
+
+                        <input
+                            type="text"
+                            id="searchInput"
+                            class="form-control"
+                            placeholder="Search complaints..."
+                        >
+
+                    </div>
+
+
+                    <select
+                        id="statusFilter"
+                        class="form-select filter-select">
+
+                        <option value="all">
+                            All Status
+                        </option>
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                        <option value="Assigned">
+                            Assigned
+                        </option>
+
+                        <option value="In Progress">
+                            In Progress
+                        </option>
+
+                        <option value="Resolved">
+                            Resolved
+                        </option>
+
+                        <option value="Closed">
+                            Closed
+                        </option>
+
+                    </select>
+
+
+                    <select
+                        id="priorityFilter"
+                        class="form-select filter-select">
+
+                        <option value="all">
+                            All Priority
+                        </option>
+
+                        <option value="High">
+                            High
+                        </option>
+
+                        <option value="Medium">
+                            Medium
+                        </option>
+
+                        <option value="Low">
+                            Low
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="complaints-container"
+                 id="complaintsContainer">
+
+
+                <!-- ================= SAMPLE COMPLAINT ================= -->
+
+                <div class="complaint-card"
+                     data-status="Pending"
+                     data-priority="High"
+                     data-search="pothole main road road public works">
+
+
+                    <div class="complaint-top">
+
+                        <div>
+
+                            <div class="complaint-id">
+                                COMPLAINT #104
+                            </div>
+
+                            <div class="complaint-title">
+                                Large pothole on Main Road
+                            </div>
+
+                            <div class="complaint-type">
+                                Road Damage
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="status-badge status-pending">
+                                <i class="bi bi-hourglass-split"></i>
+                                Pending
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="complaint-info">
+
+                        <span>
+                            <i class="bi bi-geo-alt"></i>
+                            Main Road
+                        </span>
+
+                        <span>
+                            <i class="bi bi-person"></i>
+                            Citizen
+                        </span>
+
+                        <span class="priority-badge priority-high">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            High Priority
+                        </span>
+
+                        <span>
+                            <i class="bi bi-calendar3"></i>
+                            Today
+                        </span>
+
+                    </div>
+
+
+                    <div class="action-area">
+
+                        <a href="#"
+                           class="view-btn">
+
+                            <i class="bi bi-eye me-1"></i>
+                            View Complaint
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= SAMPLE COMPLAINT ================= -->
+
+                <div class="complaint-card"
+                     data-status="In Progress"
+                     data-priority="Medium"
+                     data-search="water leakage colony water supply">
+
+
+                    <div class="complaint-top">
+
+                        <div>
+
+                            <div class="complaint-id">
+                                COMPLAINT #103
+                            </div>
+
+                            <div class="complaint-title">
+                                Water leakage near residential area
+                            </div>
+
+                            <div class="complaint-type">
+                                Water Leakage
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="status-badge status-progress">
+                                <i class="bi bi-arrow-repeat"></i>
+                                In Progress
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="complaint-info">
+
+                        <span>
+                            <i class="bi bi-geo-alt"></i>
+                            Shivaji Colony
+                        </span>
+
+                        <span>
+                            <i class="bi bi-person"></i>
+                            Citizen
+                        </span>
+
+                        <span class="priority-badge priority-medium">
+                            <i class="bi bi-dash-circle"></i>
+                            Medium
+                        </span>
+
+                        <span>
+                            <i class="bi bi-calendar3"></i>
+                            Yesterday
+                        </span>
+
+                    </div>
+
+
+                    <div class="action-area">
+
+                        <a href="#"
+                           class="view-btn">
+
+                            <i class="bi bi-eye me-1"></i>
+                            View Complaint
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= SAMPLE COMPLAINT ================= -->
+
+                <div class="complaint-card"
+                     data-status="Resolved"
+                     data-priority="Low"
+                     data-search="streetlight park electrical">
+
+
+                    <div class="complaint-top">
+
+                        <div>
+
+                            <div class="complaint-id">
+                                COMPLAINT #102
+                            </div>
+
+                            <div class="complaint-title">
+                                Streetlight not working
+                            </div>
+
+                            <div class="complaint-type">
+                                Street Lighting
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="status-badge status-resolved">
+                                <i class="bi bi-check-circle"></i>
+                                Resolved
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="complaint-info">
+
+                        <span>
+                            <i class="bi bi-geo-alt"></i>
+                            City Park
+                        </span>
+
+                        <span>
+                            <i class="bi bi-person"></i>
+                            Citizen
+                        </span>
+
+                        <span class="priority-badge priority-low">
+                            <i class="bi bi-check"></i>
+                            Low
+                        </span>
+
+                        <span>
+                            <i class="bi bi-calendar3"></i>
+                            2 days ago
+                        </span>
+
+                    </div>
+
+
+                    <div class="action-area">
+
+                        <a href="#"
+                           class="view-btn">
+
+                            <i class="bi bi-eye me-1"></i>
+                            View Complaint
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- EMPTY RESULT -->
+
+            <div id="emptyResult"
+                 class="empty-state"
+                 style="display:none;">
+
+                <i class="bi bi-search"></i>
+
+                <h5>
+                    No complaints found
+                </h5>
+
+                <p>
+                    Try changing the search or filters.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= RESOLUTION INFO ================= -->
+
+        <div class="section-card mt-4"
+             id="resolved">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h5>
+                        <i class="bi bi-check2-circle me-2"></i>
+                        Resolution Workflow
+                    </h5>
+
+                    <p>
+                        Department complaint resolution process
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="p-4">
+
+                <div class="row g-3">
+
+                    <div class="col-md-3">
+
+                        <div class="text-center">
+
+                            <div class="stat-icon mx-auto">
+                                <i class="bi bi-inbox"></i>
+                            </div>
+
+                            <h6 class="mt-3 mb-1">
+                                1. Receive
+                            </h6>
+
+                            <small class="text-muted">
+                                Department receives complaint
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3">
+
+                        <div class="text-center">
+
+                            <div class="stat-icon mx-auto">
+                                <i class="bi bi-person-check"></i>
+                            </div>
+
+                            <h6 class="mt-3 mb-1">
+                                2. Assign
+                            </h6>
+
+                            <small class="text-muted">
+                                Officer is assigned
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3">
+
+                        <div class="text-center">
+
+                            <div class="stat-icon mx-auto">
+                                <i class="bi bi-tools"></i>
+                            </div>
+
+                            <h6 class="mt-3 mb-1">
+                                3. Resolve
+                            </h6>
+
+                            <small class="text-muted">
+                                Officer works on issue
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3">
+
+                        <div class="text-center">
+
+                            <div class="stat-icon mx-auto">
+                                <i class="bi bi-check2-all"></i>
+                            </div>
+
+                            <h6 class="mt-3 mb-1">
+                                4. Close
+                            </h6>
+
+                            <small class="text-muted">
+                                Resolution is confirmed
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    /* =========================
+       SAMPLE DATA COUNTERS
+    ========================= */
+
+    const cards =
+        document.querySelectorAll(".complaint-card");
+
+    let total = cards.length;
+    let pending = 0;
+    let progress = 0;
+    let resolved = 0;
+
+    cards.forEach(card => {
+
+        const status = card.dataset.status;
+
+        if (status === "Pending") {
+            pending++;
+        }
+
+        if (status === "In Progress") {
+            progress++;
+        }
+
+        if (status === "Resolved" ||
+            status === "Closed") {
+            resolved++;
+        }
+
+    });
+
+    document.getElementById("totalCount").textContent = total;
+    document.getElementById("pendingCount").textContent = pending;
+    document.getElementById("progressCount").textContent = progress;
+    document.getElementById("resolvedCount").textContent = resolved;
+
+
+    /* =========================
+       SEARCH + FILTER
+    ========================= */
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const statusFilter =
+        document.getElementById("statusFilter");
+
+    const priorityFilter =
+        document.getElementById("priorityFilter");
+
+    const emptyResult =
+        document.getElementById("emptyResult");
+
+
+    function filterComplaints() {
+
+        const search =
+            searchInput.value.toLowerCase().trim();
+
+        const selectedStatus =
+            statusFilter.value;
+
+        const selectedPriority =
+            priorityFilter.value;
+
+        let visible = 0;
+
+
+        cards.forEach(card => {
+
+            const cardSearch =
+                card.dataset.search.toLowerCase();
+
+            const cardStatus =
+                card.dataset.status;
+
+            const cardPriority =
+                card.dataset.priority;
+
+
+            const searchMatch =
+                cardSearch.includes(search);
+
+            const statusMatch =
+                selectedStatus === "all" ||
+                cardStatus === selectedStatus;
+
+            const priorityMatch =
+                selectedPriority === "all" ||
+                cardPriority === selectedPriority;
+
+
+            if (
+                searchMatch &&
+                statusMatch &&
+                priorityMatch
+            ) {
+
+                card.style.display = "block";
+                visible++;
+
+            } else {
+
+                card.style.display = "none";
+
+            }
+
+        });
+
+
+        emptyResult.style.display =
+            visible === 0
+                ? "block"
+                : "none";
+
+    }
+
+
+    searchInput.addEventListener(
+        "input",
+        filterComplaints
+    );
+
+    statusFilter.addEventListener(
+        "change",
+        filterComplaints
+    );
+
+    priorityFilter.addEventListener(
+        "change",
+        filterComplaints
+    );
+
+</script>
+
+</body>
+</html>
+```

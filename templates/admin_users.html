@@ -1,0 +1,1013 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CivicConnect | User Management</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #111827, #1e293b);
+            color: white;
+            padding: 25px 16px;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px 28px;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+            margin-bottom: 22px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #2563eb;
+            font-size: 21px;
+        }
+
+        .brand h4 {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .brand small {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .nav-title {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 12px;
+            margin: 18px 0 8px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #cbd5e1;
+            padding: 12px 13px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            transition: .2s;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255,255,255,.08);
+            color: white;
+            transform: translateX(3px);
+        }
+
+        .sidebar a.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 7px 18px rgba(37,99,235,.25);
+        }
+
+        .logout-link {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 20px;
+            color: #fca5a5 !important;
+        }
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 76px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+
+        .page-title h3 {
+            margin: 0;
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .page-title p {
+            margin: 3px 0 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .avatar {
+            width: 39px;
+            height: 39px;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #2563eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        .admin-profile strong {
+            font-size: 14px;
+        }
+
+        .admin-profile small {
+            display: block;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
+            height: 100%;
+            transition: .25s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(15,23,42,.08);
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 20px;
+        }
+
+        .stat-card h2 {
+            margin: 13px 0 2px;
+            font-size: 27px;
+            font-weight: 750;
+        }
+
+        .stat-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .section-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 20px 22px;
+            border-bottom: 1px solid #edf0f4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-header h5 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .section-header p {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 260px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 13px;
+            top: 10px;
+            color: #94a3b8;
+        }
+
+        .search-box input {
+            padding-left: 38px;
+            border-radius: 10px;
+            border: 1px solid #dbe1e8;
+            height: 40px;
+        }
+
+        .filter-select {
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid #dbe1e8;
+            min-width: 130px;
+        }
+
+        .table-responsive {
+            min-height: 300px;
+        }
+
+        table {
+            margin: 0 !important;
+        }
+
+        thead th {
+            background: #f8fafc !important;
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            padding: 15px 18px !important;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 16px 18px !important;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 13px;
+        }
+
+        tbody tr {
+            transition: .2s;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .user-avatar {
+            width: 39px;
+            height: 39px;
+            border-radius: 11px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .user-name {
+            font-weight: 650;
+            color: #111827;
+        }
+
+        .user-email {
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .role-badge,
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border-radius: 30px;
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        .role-citizen {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .role-officer {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .role-admin {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .date-badge {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .role-form {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin: 0;
+        }
+
+        .role-form select {
+            width: 115px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid #dbe1e8;
+            font-size: 12px;
+        }
+
+        .update-btn {
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            padding: 0 11px;
+            font-size: 12px;
+            transition: .2s;
+        }
+
+        .update-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .self-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .empty-state {
+            padding: 55px 20px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 42px;
+            color: #cbd5e1;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h5 {
+            color: #334155;
+            margin-bottom: 5px;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 12px;
+        }
+
+        @media(max-width: 900px) {
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                margin-left: 210px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+
+        @media(max-width: 700px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .logout-link {
+                position: relative;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                margin-top: 15px;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .topbar {
+                padding: 0 18px;
+            }
+
+            .admin-profile > div {
+                display: none;
+            }
+
+            .content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar">
+
+    <div class="brand">
+        <div class="brand-icon">
+            <i class="bi bi-buildings"></i>
+        </div>
+
+        <div>
+            <h4>CivicConnect</h4>
+            <small>Admin Portal</small>
+        </div>
+    </div>
+
+    <div class="nav-title">Management</div>
+
+    <a href="{{ url_for('admin_dashboard') }}">
+        <i class="bi bi-grid-1x2-fill"></i>
+        Dashboard
+    </a>
+
+    <a href="{{ url_for('admin_complaints') }}">
+        <i class="bi bi-clipboard2-pulse"></i>
+        Complaints
+    </a>
+
+    <a href="{{ url_for('admin_users') }}" class="active">
+        <i class="bi bi-people-fill"></i>
+        Users
+    </a>
+
+    <div class="nav-title">System</div>
+
+    <a href="{{ url_for('dashboard') }}">
+        <i class="bi bi-speedometer2"></i>
+        Main Dashboard
+    </a>
+
+    <a href="{{ url_for('logout') }}" class="logout-link">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+    </a>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+<main class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+
+        <div class="page-title">
+            <h3>User Management</h3>
+            <p>Manage CivicConnect users and their roles</p>
+        </div>
+
+        <div class="admin-profile">
+
+            <div class="avatar">
+                {{ current_user.name[:1]|upper }}
+            </div>
+
+            <div>
+                <strong>{{ current_user.name }}</strong>
+                <small>Administrator</small>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <section class="content">
+
+        <!-- ================= FLASH MESSAGES ================= -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show mb-4"
+                         role="alert">
+
+                        <i class="bi bi-info-circle me-2"></i>
+                        {{ message }}
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert">
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+        {% endwith %}
+
+
+        <!-- ================= STATISTICS ================= -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+
+                    <h2 id="totalUsers">{{ users|length }}</h2>
+                    <p>Total Users</p>
+
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="bi bi-person-vcard"></i>
+                    </div>
+
+                    <h2 id="citizenCount">
+                        {{ users|selectattr('role', 'equalto', 'citizen')|list|length }}
+                    </h2>
+
+                    <p>Citizens</p>
+
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="bi bi-person-workspace"></i>
+                    </div>
+
+                    <h2 id="officerCount">
+                        {{ users|selectattr('role', 'equalto', 'officer')|list|length }}
+                    </h2>
+
+                    <p>Officers</p>
+
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <h2 id="adminCount">
+                        {{ users|selectattr('role', 'equalto', 'admin')|list|length }}
+                    </h2>
+
+                    <p>Administrators</p>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ================= USER TABLE ================= -->
+        <div class="section-card">
+
+            <div class="section-header">
+
+                <div>
+                    <h5>
+                        <i class="bi bi-people me-2"></i>
+                        All Users
+                    </h5>
+
+                    <p>
+                        View users and update their system roles
+                    </p>
+                </div>
+
+
+                <div class="d-flex gap-2 flex-wrap">
+
+                    <div class="search-box">
+
+                        <i class="bi bi-search"></i>
+
+                        <input type="text"
+                               id="userSearch"
+                               class="form-control"
+                               placeholder="Search name or email...">
+
+                    </div>
+
+
+                    <select id="roleFilter"
+                            class="form-select filter-select">
+
+                        <option value="all">All Roles</option>
+                        <option value="citizen">Citizen</option>
+                        <option value="officer">Officer</option>
+                        <option value="admin">Admin</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table align-middle" id="usersTable">
+
+                    <thead>
+
+                        <tr>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                            <th>Change Role</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for user in users %}
+
+                        <tr
+                            class="user-row"
+                            data-name="{{ user.name|lower }}"
+                            data-email="{{ user.email|lower }}"
+                            data-role="{{ user.role|lower }}"
+                        >
+
+                            <!-- USER -->
+                            <td>
+
+                                <div class="user-cell">
+
+                                    <div class="user-avatar">
+                                        {{ user.name[:1]|upper }}
+                                    </div>
+
+                                    <div>
+
+                                        <div class="user-name">
+                                            {{ user.name }}
+                                        </div>
+
+                                        <div class="user-email">
+                                            {{ user.email }}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- ROLE -->
+                            <td>
+
+                                {% if user.role == 'admin' %}
+
+                                    <span class="role-badge role-admin">
+                                        <i class="bi bi-shield-check"></i>
+                                        Admin
+                                    </span>
+
+                                {% elif user.role == 'officer' %}
+
+                                    <span class="role-badge role-officer">
+                                        <i class="bi bi-person-workspace"></i>
+                                        Officer
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="role-badge role-citizen">
+                                        <i class="bi bi-person"></i>
+                                        Citizen
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- JOINED -->
+                            <td>
+
+                                <span class="date-badge">
+
+                                    <i class="bi bi-calendar3"></i>
+
+                                    {% if user.created_at %}
+                                        {{ user.created_at.strftime('%d %b %Y') }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- ROLE UPDATE -->
+                            <td>
+
+                                {% if user.id == current_user.id %}
+
+                                    <span class="self-label">
+                                        <i class="bi bi-lock-fill"></i>
+                                        Current Account
+                                    </span>
+
+                                {% else %}
+
+                                    <form method="POST"
+                                          action="{{ url_for('admin_update_user_role', user_id=user.id) }}"
+                                          class="role-form"
+                                          onsubmit="return confirmRoleChange(this);">
+
+                                        <select name="role"
+                                                class="form-select">
+
+                                            <option value="citizen"
+                                                {% if user.role == 'citizen' %}selected{% endif %}>
+                                                Citizen
+                                            </option>
+
+                                            <option value="officer"
+                                                {% if user.role == 'officer' %}selected{% endif %}>
+                                                Officer
+                                            </option>
+
+                                            <option value="admin"
+                                                {% if user.role == 'admin' %}selected{% endif %}>
+                                                Admin
+                                            </option>
+
+                                        </select>
+
+                                        <button type="submit"
+                                                class="update-btn">
+
+                                            <i class="bi bi-check2"></i>
+
+                                        </button>
+
+                                    </form>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    {% else %}
+
+                        <tr>
+                            <td colspan="4">
+
+                                <div class="empty-state">
+
+                                    <i class="bi bi-people"></i>
+
+                                    <h5>No users found</h5>
+
+                                    <p class="mb-0">
+                                        There are currently no users in CivicConnect.
+                                    </p>
+
+                                </div>
+
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+
+                <!-- SEARCH EMPTY STATE -->
+                <div id="searchEmpty"
+                     class="empty-state"
+                     style="display:none;">
+
+                    <i class="bi bi-search"></i>
+
+                    <h5>No matching users</h5>
+
+                    <p class="mb-0">
+                        Try another name, email or role.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+
+    /* =========================
+       USER SEARCH + FILTER
+    ========================= */
+
+    const searchInput = document.getElementById("userSearch");
+    const roleFilter = document.getElementById("roleFilter");
+    const rows = document.querySelectorAll(".user-row");
+    const searchEmpty = document.getElementById("searchEmpty");
+
+
+    function filterUsers() {
+
+        const search = searchInput.value.toLowerCase().trim();
+        const role = roleFilter.value;
+
+        let visible = 0;
+
+        rows.forEach(row => {
+
+            const name = row.dataset.name;
+            const email = row.dataset.email;
+            const userRole = row.dataset.role;
+
+            const matchesSearch =
+                name.includes(search) ||
+                email.includes(search);
+
+            const matchesRole =
+                role === "all" ||
+                userRole === role;
+
+            if (matchesSearch && matchesRole) {
+
+                row.style.display = "";
+                visible++;
+
+            } else {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+
+        searchEmpty.style.display =
+            visible === 0 && rows.length > 0
+                ? "block"
+                : "none";
+    }
+
+
+    searchInput.addEventListener("input", filterUsers);
+    roleFilter.addEventListener("change", filterUsers);
+
+
+    /* =========================
+       ROLE CHANGE CONFIRMATION
+    ========================= */
+
+    function confirmRoleChange(form) {
+
+        const select = form.querySelector("select");
+        const selectedRole = select.value;
+
+        const roleName =
+            selectedRole.charAt(0).toUpperCase() +
+            selectedRole.slice(1);
+
+        return confirm(
+            "Are you sure you want to change this user's role to " +
+            roleName +
+            "?"
+        );
+    }
+
+
+    /* =========================
+       AUTO HIDE FLASH MESSAGES
+    ========================= */
+
+    setTimeout(() => {
+
+        document.querySelectorAll(".alert").forEach(alert => {
+
+            const instance =
+                bootstrap.Alert.getOrCreateInstance(alert);
+
+            instance.close();
+
+        });
+
+    }, 5000);
+
+
+    /* =========================
+       ENTER KEY SEARCH
+    ========================= */
+
+    searchInput.addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter") {
+            event.preventDefault();
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
+```

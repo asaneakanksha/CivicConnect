@@ -1,0 +1,90 @@
+[
+    {
+        "id": 1,
+        "type": "new_complaint",
+        "title": "New Complaint",
+        "message": "New Pothole complaint #101 has been assigned to your department.",
+        "complaint_id": 101,
+        "department_id": 1,
+        "officer_id": null,
+        "created_at": "2026-09-17T11:04:10.443666",
+        "read": false
+    },
+    {
+        "id": 2,
+        "type": "new_complaint",
+        "title": "New Complaint Assigned",
+        "message": "Complaint #1 has been assigned to Solid Waste Management.",
+        "complaint_id": 1,
+        "department_id": 2,
+        "officer_id": null,
+        "created_at": "2026-09-24T10:36:32.238377",
+        "read": false
+    },
+    {
+        "id": 3,
+        "type": "new_complaint",
+        "title": "New Complaint Assigned",
+        "message": "Complaint #2 has been assigned to Road & Public Works.",
+        "complaint_id": 2,
+        "department_id": 1,
+        "officer_id": null,
+        "created_at": "2026-09-24T10:36:32.280046",
+        "read": false
+    },
+    {
+        "id": 4,
+        "type": "officer_assignment",
+        "title": "New Complaint Assigned",
+        "message": "Complaint #1 has been assigned to you.",
+        "complaint_id": 1,
+        "department_id": 2,
+        "officer_id": 1,
+        "created_at": "2026-09-24T10:45:11.911070",
+        "read": false
+    },
+    {
+        "id": 5,
+        "type": "officer_assignment",
+        "title": "New Complaint Assigned",
+        "message": "Complaint #2 has been assigned to you.",
+        "complaint_id": 2,
+        "department_id": 1,
+        "officer_id": 1,
+        "created_at": "2026-09-24T10:45:11.954730",
+        "read": false
+    },
+    {
+        "id": 6,
+        "type": "officer_assignment",
+        "title": "New Complaint Assigned",
+        "message": "Complaint #3 has been assigned to you.",
+        "complaint_id": 3,
+        "department_id": 1,
+        "officer_id": 1,
+        "created_at": "2026-09-24T10:45:12.021330",
+        "read": false
+    },
+    {
+        "id": 7,
+        "type": "officer_assignment",
+        "title": "New Complaint Assigned",
+        "message": "Complaint #4 has been assigned to you.",
+        "complaint_id": 4,
+        "department_id": 1,
+        "officer_id": 1,
+        "created_at": "2026-09-24T10:45:12.062702",
+        "read": false
+    },
+    {
+        "id": 8,
+        "type": "assigned",
+        "title": "New Complaint Assigned",
+        "message": "Complaint #5 has been assigned to Road & Public Works.",
+        "complaint_id": 5,
+        "department_id": 1,
+        "officer_id": 8,
+        "created_at": "2026-10-01T10:45:16.162299",
+        "read": false
+    }
+]

@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Officer Dashboard | CivicConnect</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                <i class="bi bi-buildings"></i>
+            </div>
+
+            <div>
+                <strong>CivicConnect</strong>
+                <small>Officer Portal</small>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="{{ url_for('officer_dashboard') }}"
+               class="active">
+
+                <i class="bi bi-grid-1x2"></i>
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a href="{{ url_for('officer_dashboard') }}">
+
+                <i class="bi bi-clipboard-data"></i>
+                <span>Complaints</span>
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-user">
+
+                <div class="sidebar-avatar">
+                    {{ current_user.name[0]|upper }}
+                </div>
+
+                <div class="sidebar-user-info">
+
+                    <strong>
+                        {{ current_user.name }}
+                    </strong>
+
+                    <span>
+                        Officer
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <a href="{{ url_for('logout') }}"
+               class="logout-link">
+
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="dashboard-main">
+
+        <!-- TOPBAR -->
+
+        <header class="dashboard-topbar">
+
+            <div>
+
+                <div class="breadcrumb-text">
+                    Officer / Dashboard
+                </div>
+
+                <h1>
+                    Officer Dashboard
+                </h1>
+
+                <p>
+                    Manage and resolve civic complaints assigned to the department.
+                </p>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <div class="topbar-icon">
+
+                    <i class="bi bi-bell"></i>
+
+                </div>
+
+
+                <div class="topbar-user">
+
+                    <div class="topbar-avatar">
+                        {{ current_user.name[0]|upper }}
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            {{ current_user.name }}
+                        </strong>
+
+                        <span>
+                            Officer
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= FLASH ================= -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="alert
+                        {% if category == 'success' %}
+                            alert-success
+                        {% elif category == 'danger' %}
+                            alert-danger
+                        {% elif category == 'warning' %}
+                            alert-warning
+                        {% else %}
+                            alert-info
+                        {% endif %}">
+
+                        <i class="bi bi-info-circle me-2"></i>
+
+                        {{ message }}
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- ================= STATS ================= -->
+
+        <section class="stats-grid">
+
+            <!-- TOTAL -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-clipboard-data"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Total Complaints
+                    </span>
+
+                    <strong>
+                        {{ total }}
+                    </strong>
+
+                    <small>
+                        All reported issues
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- PENDING -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-clock"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Pending
+                    </span>
+
+                    <strong>
+                        {{ pending }}
+                    </strong>
+
+                    <small>
+                        Awaiting action
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- ASSIGNED -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-person-check"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Assigned
+                    </span>
+
+                    <strong>
+                        {{ assigned }}
+                    </strong>
+
+                    <small>
+                        Assigned complaints
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- IN PROGRESS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-arrow-repeat"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        In Progress
+                    </span>
+
+                    <strong>
+                        {{ progress }}
+                    </strong>
+
+                    <small>
+                        Currently being handled
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- RESOLVED -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-check-circle"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        Resolved
+                    </span>
+
+                    <strong>
+                        {{ resolved }}
+                    </strong>
+
+                    <small>
+                        Completed complaints
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- HIGH PRIORITY -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        High Priority
+                    </span>
+
+                    <strong>
+                        {{ urgent }}
+                    </strong>
+
+                    <small>
+                        Requires attention
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= COMPLAINT MANAGEMENT ================= -->
+
+        <section class="content-card">
+
+            <div class="content-card-header">
+
+                <div>
+
+                    <h3>
+
+                        <i class="bi bi-list-check"></i>
+
+                        Complaint Management
+
+                    </h3>
+
+                    <p>
+                        Review, assign and update reported civic issues.
+                    </p>
+
+                </div>
+
+
+                <div class="complaint-count">
+
+                    <span id="visibleComplaintCount">
+                        {{ complaints|length }}
+                    </span>
+
+                    complaints
+
+                </div>
+
+            </div>
+
+
+            <!-- FILTERS -->
+
+            <div class="complaint-filters">
+
+                <div class="filter-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                        type="text"
+                        id="complaintSearch"
+                        placeholder="Search complaints..."
+                    >
+
+                </div>
+
+
+                <div class="filter-select">
+
+                    <select id="statusFilter">
+
+                        <option value="all">
+                            All Status
+                        </option>
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                        <option value="Assigned">
+                            Assigned
+                        </option>
+
+                        <option value="In Progress">
+                            In Progress
+                        </option>
+
+                        <option value="Resolved">
+                            Resolved
+                        </option>
+
+                        <option value="Closed">
+                            Closed
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-select">
+
+                    <select id="priorityFilter">
+
+                        <option value="all">
+                            All Priority
+                        </option>
+
+                        <option value="High">
+                            High
+                        </option>
+
+                        <option value="Medium">
+                            Medium
+                        </option>
+
+                        <option value="Low">
+                            Low
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="filter-reset"
+                    onclick="resetComplaintFilters()">
+
+                    <i class="bi bi-arrow-counterclockwise"></i>
+
+                    Reset
+
+                </button>
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <div class="table-responsive">
+
+                <table class="table complaint-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Complaint</th>
+
+                            <th>Citizen</th>
+
+                            <th>Location</th>
+
+                            <th>Department</th>
+
+                            <th>Officer</th>
+
+                            <th>Priority</th>
+
+                            <th>Status</th>
+
+                            <th>Date</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for complaint in complaints %}
+
+                        <tr class="complaint-row"
+
+                            data-search="
+                                {{ complaint.id }}
+                                {{ complaint.title }}
+                                {{ complaint.description }}
+                                {{ complaint.issue_type }}
+                                {{ complaint.location }}
+                                {{ complaint.citizen.name if complaint.citizen else '' }}
+                                {{ complaint.department.name if complaint.department else '' }}
+                                {{ complaint.assigned_officer.name if complaint.assigned_officer else '' }}
+                            "
+
+                            data-status="{{ complaint.status }}"
+
+                            data-priority="{{ complaint.priority }}">
+
+
+                            <!-- ID -->
+
+                            <td>
+
+                                <span class="complaint-id">
+                                    #{{ complaint.id }}
+                                </span>
+
+                            </td>
+
+
+                            <!-- COMPLAINT -->
+
+                            <td>
+
+                                <div class="complaint-title-cell">
+
+                                    <strong>
+                                        {{ complaint.title }}
+                                    </strong>
+
+                                    <small>
+                                        {{ complaint.issue_type }}
+                                    </small>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- CITIZEN -->
+
+                            <td>
+
+                                {% if complaint.citizen %}
+
+                                    <div class="citizen-cell">
+
+                                        <div class="mini-avatar">
+
+                                            {{ complaint.citizen.name[0]|upper }}
+
+                                        </div>
+
+                                        <span>
+                                            {{ complaint.citizen.name }}
+                                        </span>
+
+                                    </div>
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        Unknown
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- LOCATION -->
+
+                            <td>
+
+                                <div class="location-cell">
+
+                                    <i class="bi bi-geo-alt"></i>
+
+                                    <span>
+                                        {{ complaint.location }}
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- DEPARTMENT -->
+
+                            <td>
+
+                                {% if complaint.department %}
+
+                                    <span class="department-badge">
+
+                                        {{ complaint.department.name }}
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="not-assigned">
+                                        Not Assigned
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- OFFICER -->
+
+                            <td>
+
+                                {% if complaint.assigned_officer %}
+
+                                    <div class="citizen-cell">
+
+                                        <div class="mini-avatar">
+
+                                            {{ complaint.assigned_officer.name[0]|upper }}
+
+                                        </div>
+
+                                        <span>
+                                            {{ complaint.assigned_officer.name }}
+                                        </span>
+
+                                    </div>
+
+                                {% else %}
+
+                                    <span class="not-assigned">
+                                        Not Assigned
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- PRIORITY -->
+
+                            <td>
+
+                                {% if complaint.priority == "High" %}
+
+                                    <span class="priority-badge priority-high">
+
+                                        <i class="bi bi-exclamation-circle"></i>
+
+                                        High
+
+                                    </span>
+
+                                {% elif complaint.priority == "Low" %}
+
+                                    <span class="priority-badge priority-low">
+
+                                        <i class="bi bi-arrow-down-circle"></i>
+
+                                        Low
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="priority-badge priority-medium">
+
+                                        <i class="bi bi-dash-circle"></i>
+
+                                        Medium
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+                                {% if complaint.status == "Resolved" %}
+
+                                    <span class="status-badge status-resolved">
+
+                                        <i class="bi bi-check-circle"></i>
+
+                                        Resolved
+
+                                    </span>
+
+                                {% elif complaint.status == "In Progress" %}
+
+                                    <span class="status-badge status-progress">
+
+                                        <i class="bi bi-arrow-repeat"></i>
+
+                                        In Progress
+
+                                    </span>
+
+                                {% elif complaint.status == "Assigned" %}
+
+                                    <span class="status-badge status-assigned">
+
+                                        <i class="bi bi-person-check"></i>
+
+                                        Assigned
+
+                                    </span>
+
+                                {% elif complaint.status == "Closed" %}
+
+                                    <span class="status-badge status-closed">
+
+                                        <i class="bi bi-lock"></i>
+
+                                        Closed
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status-badge status-pending">
+
+                                        <i class="bi bi-clock"></i>
+
+                                        Pending
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- DATE -->
+
+                            <td>
+
+                                {% if complaint.created_at %}
+
+                                    <span class="date-cell">
+
+                                        {{ complaint.created_at.strftime('%d %b %Y') }}
+
+                                        <small>
+                                            {{ complaint.created_at.strftime('%I:%M %p') }}
+                                        </small>
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- VIEW -->
+
+                            <td>
+
+                                <a
+                                    href="{{ url_for('complaint_details', complaint_id=complaint.id) }}"
+                                    class="view-complaint-btn">
+
+                                    <i class="bi bi-eye"></i>
+
+                                    View
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    {% else %}
+
+                        <tr>
+
+                            <td colspan="10">
+
+                                <div class="empty-state">
+
+                                    <div class="empty-icon">
+
+                                        <i class="bi bi-inbox"></i>
+
+                                    </div>
+
+                                    <h4>
+                                        No complaints found
+                                    </h4>
+
+                                    <p>
+                                        There are currently no complaints to manage.
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- FILTER EMPTY -->
+
+            <div id="noFilterResults"
+                 class="empty-state filter-empty"
+                 style="display:none;">
+
+                <div class="empty-icon">
+
+                    <i class="bi bi-search"></i>
+
+                </div>
+
+                <h4>
+                    No matching complaints
+                </h4>
+
+                <p>
+                    Try changing your search or filters.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+const searchInput =
+    document.getElementById("complaintSearch");
+
+const statusFilter =
+    document.getElementById("statusFilter");
+
+const priorityFilter =
+    document.getElementById("priorityFilter");
+
+const complaintRows =
+    document.querySelectorAll(".complaint-row");
+
+const visibleComplaintCount =
+    document.getElementById("visibleComplaintCount");
+
+const noFilterResults =
+    document.getElementById("noFilterResults");
+
+
+function filterComplaints() {
+
+    const search =
+        searchInput.value
+            .toLowerCase()
+            .trim();
+
+    const status =
+        statusFilter.value;
+
+    const priority =
+        priorityFilter.value;
+
+    let count = 0;
+
+
+    complaintRows.forEach(function(row) {
+
+        const rowSearch =
+            row.dataset.search.toLowerCase();
+
+        const rowStatus =
+            row.dataset.status;
+
+        const rowPriority =
+            row.dataset.priority;
+
+
+        const matchesSearch =
+            search === "" ||
+            rowSearch.includes(search);
+
+        const matchesStatus =
+            status === "all" ||
+            rowStatus === status;
+
+        const matchesPriority =
+            priority === "all" ||
+            rowPriority === priority;
+
+
+        if (
+            matchesSearch &&
+            matchesStatus &&
+            matchesPriority
+        ) {
+
+            row.style.display = "";
+
+            count++;
+
+        } else {
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+
+    visibleComplaintCount.textContent = count;
+
+
+    if (
+        count === 0 &&
+        complaintRows.length > 0
+    ) {
+
+        noFilterResults.style.display = "block";
+
+    } else {
+
+        noFilterResults.style.display = "none";
+
+    }
+
+}
+
+
+function resetComplaintFilters() {
+
+    searchInput.value = "";
+
+    statusFilter.value = "all";
+
+    priorityFilter.value = "all";
+
+    filterComplaints();
+
+}
+
+
+if (searchInput) {
+
+    searchInput.addEventListener(
+        "input",
+        filterComplaints
+    );
+
+}
+
+
+if (statusFilter) {
+
+    statusFilter.addEventListener(
+        "change",
+        filterComplaints
+    );
+
+}
+
+
+if (priorityFilter) {
+
+    priorityFilter.addEventListener(
+        "change",
+        filterComplaints
+    );
+
+}
+
+
+/* ================= FLASH AUTO HIDE ================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const alerts =
+            document.querySelectorAll(".alert");
+
+        alerts.forEach(function(alert) {
+
+            setTimeout(function() {
+
+                alert.style.transition =
+                    "opacity 0.4s ease";
+
+                alert.style.opacity = "0";
+
+                setTimeout(function() {
+
+                    alert.remove();
+
+                }, 400);
+
+            }, 5000);
+
+        });
+
+    }
+);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register | CivicConnect</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="auth-page">
+
+<div class="auth-wrapper">
+
+    <!-- LEFT SIDE -->
+    <div class="auth-info">
+
+        <a href="{{ url_for('index') }}" class="auth-logo">
+            <div class="logo-icon">
+                <i class="bi bi-buildings"></i>
+            </div>
+
+            <div>
+                <strong>CivicConnect</strong>
+                <span>Smart Civic Management</span>
+            </div>
+        </a>
+
+        <div class="auth-info-content">
+
+            <span class="auth-badge">
+                <i class="bi bi-person-plus"></i>
+                Join CivicConnect
+            </span>
+
+            <h1>
+                Make your city
+                <span>better.</span>
+            </h1>
+
+            <p>
+                Create your citizen account and start reporting
+                public issues in your area.
+            </p>
+
+            <div class="auth-features">
+
+                <div class="auth-feature">
+                    <div class="feature-icon">
+                        <i class="bi bi-camera"></i>
+                    </div>
+
+                    <div>
+                        <h4>Report Issues</h4>
+                        <p>Report civic problems with photos and location.</p>
+                    </div>
+                </div>
+
+                <div class="auth-feature">
+                    <div class="feature-icon">
+                        <i class="bi bi-geo-alt"></i>
+                    </div>
+
+                    <div>
+                        <h4>Track Complaints</h4>
+                        <p>Track the progress of your complaints easily.</p>
+                    </div>
+                </div>
+
+                <div class="auth-feature">
+                    <div class="feature-icon">
+                        <i class="bi bi-bell"></i>
+                    </div>
+
+                    <div>
+                        <h4>Stay Updated</h4>
+                        <p>Know when your reported issue gets updated.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="auth-footer-text">
+            © 2026 CivicConnect · Building better communities together
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT SIDE -->
+    <div class="auth-form-section">
+
+        <div class="auth-form-card">
+
+            <div class="mobile-auth-logo">
+
+                <a href="{{ url_for('index') }}" class="auth-logo">
+                    <div class="logo-icon">
+                        <i class="bi bi-buildings"></i>
+                    </div>
+
+                    <div>
+                        <strong>CivicConnect</strong>
+                        <span>Smart Civic Management</span>
+                    </div>
+                </a>
+
+            </div>
+
+
+            <div class="auth-heading">
+
+                <h2>Create your account</h2>
+
+                <p>
+                    Register as a citizen to report and track
+                    public issues.
+                </p>
+
+            </div>
+
+
+            <!-- FLASH MESSAGES -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+
+                {% if messages %}
+
+                    {% for category, message in messages %}
+
+                        <div class="alert
+                            {% if category == 'success' %}
+                                alert-success
+                            {% elif category == 'danger' %}
+                                alert-danger
+                            {% elif category == 'warning' %}
+                                alert-warning
+                            {% else %}
+                                alert-info
+                            {% endif %}
+                            auth-alert">
+
+                            <i class="bi
+                                {% if category == 'success' %}
+                                    bi-check-circle
+                                {% elif category == 'danger' %}
+                                    bi-exclamation-circle
+                                {% elif category == 'warning' %}
+                                    bi-exclamation-triangle
+                                {% else %}
+                                    bi-info-circle
+                                {% endif %}
+                            "></i>
+
+                            <span>{{ message }}</span>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endwith %}
+
+
+            <!-- REGISTER FORM -->
+            <form method="POST"
+                  action="{{ url_for('register') }}"
+                  class="auth-form"
+                  id="registerForm">
+
+                <!-- NAME -->
+                <div class="form-group">
+
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-person input-icon"></i>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="form-control auth-input"
+                            placeholder="Enter your full name"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- EMAIL -->
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-envelope input-icon"></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-control auth-input"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-lock input-icon"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control auth-input password-field"
+                            placeholder="Create a password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="toggleRegisterPassword('password', 'passwordIcon')"
+                            aria-label="Show password">
+
+                            <i class="bi bi-eye"
+                               id="passwordIcon"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONFIRM PASSWORD -->
+                <div class="form-group">
+
+                    <label for="confirm_password">
+                        Confirm Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-shield-lock input-icon"></i>
+
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            class="form-control auth-input password-field"
+                            placeholder="Confirm your password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="toggleRegisterPassword('confirm_password', 'confirmPasswordIcon')"
+                            aria-label="Show password">
+
+                            <i class="bi bi-eye"
+                               id="confirmPasswordIcon"></i>
+
+                        </button>
+
+                    </div>
+
+                    <small id="passwordMessage"
+                           class="password-message">
+                    </small>
+
+                </div>
+
+
+                <!-- ACCOUNT TYPE -->
+                <div class="account-type-box">
+
+                    <div class="account-type-icon">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+
+                    <div>
+                        <strong>Citizen Account</strong>
+
+                        <p>
+                            You will be registered as a citizen.
+                            Admin and officer accounts are managed
+                            by the system administrator.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- TERMS -->
+                <div class="form-check terms-check">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="terms"
+                        required
+                    >
+
+                    <label class="form-check-label"
+                           for="terms">
+
+                        I agree to use CivicConnect responsibly
+                        and provide accurate information.
+
+                    </label>
+
+                </div>
+
+
+                <!-- SUBMIT -->
+                <button
+                    type="submit"
+                    class="btn auth-submit"
+                    id="registerButton">
+
+                    <span>
+                        Create Account
+                    </span>
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </button>
+
+            </form>
+
+
+            <!-- LOGIN LINK -->
+            <div class="auth-switch">
+
+                <span>Already have an account?</span>
+
+                <a href="{{ url_for('login') }}">
+                    Sign in
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+
+
+            <!-- HOME -->
+            <div class="back-home">
+
+                <a href="{{ url_for('index') }}">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Home
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function toggleRegisterPassword(inputId, iconId) {
+
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+
+    if (!input || !icon) {
+        return;
+    }
+
+    if (input.type === "password") {
+
+        input.type = "text";
+
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+
+    } else {
+
+        input.type = "password";
+
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+
+    }
+}
+
+
+/* PASSWORD MATCH CHECK */
+
+const password = document.getElementById("password");
+const confirmPassword = document.getElementById("confirm_password");
+const passwordMessage = document.getElementById("passwordMessage");
+const registerForm = document.getElementById("registerForm");
+
+function checkPasswords() {
+
+    if (!password || !confirmPassword || !passwordMessage) {
+        return true;
+    }
+
+    if (confirmPassword.value === "") {
+
+        passwordMessage.textContent = "";
+        passwordMessage.className = "password-message";
+
+        return true;
+    }
+
+    if (password.value === confirmPassword.value) {
+
+        passwordMessage.textContent = "Passwords match";
+        passwordMessage.className =
+            "password-message password-success";
+
+        return true;
+
+    } else {
+
+        passwordMessage.textContent = "Passwords do not match";
+        passwordMessage.className =
+            "password-message password-error";
+
+        return false;
+    }
+}
+
+
+if (password) {
+    password.addEventListener("input", checkPasswords);
+}
+
+if (confirmPassword) {
+    confirmPassword.addEventListener("input", checkPasswords);
+}
+
+
+if (registerForm) {
+
+    registerForm.addEventListener("submit", function(event) {
+
+        if (!checkPasswords()) {
+
+            event.preventDefault();
+
+            confirmPassword.focus();
+
+            return;
+        }
+
+        const button = document.getElementById("registerButton");
+
+        if (button) {
+
+            button.innerHTML =
+                '<span>Creating Account...</span>' +
+                '<i class="bi bi-arrow-repeat spin"></i>';
+
+            button.disabled = true;
+        }
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

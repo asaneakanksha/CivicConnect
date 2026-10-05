@@ -1,0 +1,1860 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Complaint #{{ complaint.id }} | CivicConnect
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Inter,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    #e9e7ff 0%,
+                    #f5f7ff 35%,
+                    #eef2ff 100%
+                );
+
+            color: #172033;
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           TOP NAVBAR
+           ========================= */
+
+        .topbar {
+            height: 76px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #111a35,
+                    #202a55
+                );
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 5%;
+
+            box-shadow:
+                0 8px 30px rgba(15, 23, 42, 0.18);
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+
+        .brand {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .brand span {
+            color: #7167ff;
+        }
+
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 9px 15px;
+
+            border-radius: 30px;
+
+            background:
+                rgba(255, 255, 255, 0.09);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.12);
+
+            font-size: 14px;
+        }
+
+
+        .user-avatar {
+            width: 31px;
+            height: 31px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7167ff,
+                    #9c7cff
+                );
+
+            font-weight: 700;
+        }
+
+
+        /* =========================
+           PAGE
+           ========================= */
+
+        .page {
+            max-width: 1250px;
+            margin: 0 auto;
+
+            padding:
+                35px 25px 60px;
+        }
+
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #4f46e5;
+
+            text-decoration: none;
+
+            font-weight: 600;
+            font-size: 14px;
+
+            margin-bottom: 25px;
+
+            transition: 0.25s;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-4px);
+            color: #3730a3;
+        }
+
+
+        /* =========================
+           HERO
+           ========================= */
+
+        .hero {
+            position: relative;
+
+            overflow: hidden;
+
+            border-radius: 26px;
+
+            padding: 32px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ffffff,
+                    #f7f7ff
+                );
+
+            border:
+                1px solid #e5e7eb;
+
+            box-shadow:
+                0 18px 50px rgba(45, 55, 110, 0.12);
+
+            margin-bottom: 25px;
+        }
+
+
+        .hero::after {
+            content: "";
+
+            position: absolute;
+
+            width: 230px;
+            height: 230px;
+
+            right: -90px;
+            top: -100px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(113, 103, 255, 0.20),
+                    rgba(139, 92, 246, 0.04)
+                );
+        }
+
+
+        .hero-top {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 25px;
+
+            position: relative;
+            z-index: 2;
+        }
+
+
+        .complaint-label {
+            color: #6b7280;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.2px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .hero h1 {
+            margin: 0;
+
+            font-size: 32px;
+
+            color: #111827;
+
+            text-transform: capitalize;
+        }
+
+
+        .complaint-id {
+            margin-top: 8px;
+
+            color: #64748b;
+
+            font-size: 14px;
+        }
+
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            justify-content: flex-end;
+        }
+
+
+        .badge {
+            padding: 9px 15px;
+
+            border-radius: 30px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        .status-pending {
+            background: #fff4d6;
+            color: #a16207;
+        }
+
+        .status-assigned {
+            background: #dff6fb;
+            color: #087b91;
+        }
+
+        .status-progress {
+            background: #e7e4ff;
+            color: #5145cd;
+        }
+
+        .status-resolved {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-closed {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+
+        .priority-low {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .priority-medium {
+            background: #fef3c7;
+            color: #a16207;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+
+        /* =========================
+           PROGRESS TRACKER
+           ========================= */
+
+        .progress-card {
+            margin-top: 30px;
+
+            padding-top: 25px;
+
+            border-top:
+                1px solid #e5e7eb;
+        }
+
+
+        .progress-title {
+            font-size: 14px;
+
+            font-weight: 700;
+
+            color: #475569;
+
+            margin-bottom: 22px;
+        }
+
+
+        .progress {
+            display: flex;
+
+            justify-content: space-between;
+
+            position: relative;
+
+            max-width: 850px;
+
+            margin: auto;
+        }
+
+
+        .progress::before {
+            content: "";
+
+            position: absolute;
+
+            top: 16px;
+            left: 7%;
+
+            width: 86%;
+
+            height: 4px;
+
+            background: #e5e7eb;
+
+            border-radius: 10px;
+        }
+
+
+        .step {
+            position: relative;
+            z-index: 2;
+
+            text-align: center;
+
+            width: 19%;
+        }
+
+
+        .step-circle {
+            width: 34px;
+            height: 34px;
+
+            border-radius: 50%;
+
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: white;
+
+            border: 3px solid #dbe0ea;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+
+        .step.active .step-circle {
+            border-color: #6366f1;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #8b5cf6
+                );
+
+            color: white;
+
+            box-shadow:
+                0 5px 15px rgba(99, 102, 241, 0.30);
+        }
+
+
+        .step.done .step-circle {
+            border-color: #22c55e;
+
+            background: #22c55e;
+
+            color: white;
+        }
+
+
+        .step-text {
+            margin-top: 9px;
+
+            font-size: 11px;
+
+            color: #64748b;
+
+            font-weight: 600;
+        }
+
+
+        .step.active .step-text,
+        .step.done .step-text {
+            color: #312e81;
+        }
+
+
+        /* =========================
+           MAIN GRID
+           ========================= */
+
+        .main-grid {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1.7fr)
+                minmax(280px, 0.9fr);
+
+            gap: 24px;
+
+            align-items: start;
+        }
+
+
+        .card {
+            background: white;
+
+            border:
+                1px solid #e8eaf0;
+
+            border-radius: 22px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 12px 35px rgba(30, 41, 59, 0.07);
+
+            margin-bottom: 24px;
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+
+        .card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 18px 42px rgba(30, 41, 59, 0.11);
+        }
+
+
+        .card-header {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .icon-box {
+            width: 43px;
+            height: 43px;
+
+            border-radius: 13px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ede9fe,
+                    #e0e7ff
+                );
+
+            color: #5b4fd6;
+
+            font-size: 20px;
+        }
+
+
+        .card-header h2 {
+            margin: 0;
+
+            font-size: 19px;
+
+            color: #172033;
+        }
+
+
+        .card-header p {
+            margin: 3px 0 0;
+
+            font-size: 12px;
+
+            color: #94a3b8;
+        }
+
+
+        /* =========================
+           DESCRIPTION
+           ========================= */
+
+        .description {
+            line-height: 1.8;
+
+            color: #475569;
+
+            font-size: 15px;
+
+            background: #f8fafc;
+
+            padding: 18px;
+
+            border-radius: 15px;
+
+            border-left:
+                4px solid #6366f1;
+        }
+
+
+        /* =========================
+           INFO GRID
+           ========================= */
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 15px;
+        }
+
+
+        .info-item {
+            padding: 17px;
+
+            border-radius: 16px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f8fafc,
+                    #f5f3ff
+                );
+
+            border:
+                1px solid #edf0f6;
+        }
+
+
+        .info-label {
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.8px;
+
+            color: #94a3b8;
+
+            font-weight: 700;
+
+            margin-bottom: 7px;
+        }
+
+
+        .info-value {
+            font-size: 14px;
+
+            color: #1e293b;
+
+            font-weight: 650;
+        }
+
+
+        /* =========================
+           ASSIGNMENT
+           ========================= */
+
+        .assignment {
+            background:
+                linear-gradient(
+                    135deg,
+                    #151d3b,
+                    #27275a
+                );
+
+            color: white;
+
+            border: none;
+        }
+
+
+        .assignment .card-header h2 {
+            color: white;
+        }
+
+        .assignment .card-header p {
+            color: #c7d2fe;
+        }
+
+
+        .assignment .icon-box {
+            background:
+                rgba(255,255,255,0.12);
+
+            color: #c4b5fd;
+        }
+
+
+        .assignment-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 15px;
+        }
+
+
+        .assignment-item {
+            padding: 17px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255,255,255,0.08);
+
+            border:
+                1px solid rgba(255,255,255,0.09);
+        }
+
+
+        .assignment-item span {
+            display: block;
+
+            color: #a5b4fc;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.8px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .assignment-item strong {
+            color: white;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           TIMELINE
+           ========================= */
+
+        .timeline {
+            position: relative;
+
+            margin-top: 5px;
+
+            padding-left: 12px;
+        }
+
+
+        .timeline::before {
+            content: "";
+
+            position: absolute;
+
+            left: 27px;
+            top: 8px;
+            bottom: 8px;
+
+            width: 2px;
+
+            background:
+                linear-gradient(
+                    #6366f1,
+                    #dbeafe
+                );
+        }
+
+
+        .timeline-item {
+            position: relative;
+
+            display: flex;
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .timeline-dot {
+            flex-shrink: 0;
+
+            width: 32px;
+            height: 32px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #8b5cf6
+                );
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 13px;
+
+            z-index: 2;
+
+            box-shadow:
+                0 5px 15px rgba(99,102,241,0.25);
+        }
+
+
+        .timeline-content {
+            padding-top: 2px;
+
+            flex: 1;
+        }
+
+
+        .timeline-content strong {
+            display: block;
+
+            color: #1e293b;
+
+            font-size: 14px;
+        }
+
+
+        .timeline-time {
+            color: #94a3b8;
+
+            font-size: 11px;
+
+            margin-top: 4px;
+        }
+
+
+        .timeline-message {
+            margin-top: 8px;
+
+            color: #64748b;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================
+           CITIZEN CARD
+           ========================= */
+
+        .profile-card {
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .big-avatar {
+            width: 55px;
+            height: 55px;
+
+            border-radius: 17px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #8b5cf6
+                );
+
+            color: white;
+
+            font-size: 20px;
+
+            font-weight: 800;
+        }
+
+
+        .profile-name {
+            font-weight: 750;
+
+            color: #172033;
+
+            font-size: 15px;
+        }
+
+
+        .profile-email {
+            color: #94a3b8;
+
+            font-size: 12px;
+
+            margin-top: 4px;
+        }
+
+
+        /* =========================
+           LOCATION
+           ========================= */
+
+        .location-box {
+            display: flex;
+
+            gap: 14px;
+
+            align-items: center;
+
+            padding: 17px;
+
+            border-radius: 16px;
+
+            background: #f8fafc;
+        }
+
+
+        .location-icon {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 13px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #fee2e2;
+
+            font-size: 20px;
+        }
+
+
+        .location-text {
+            color: #334155;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           IMAGE
+           ========================= */
+
+        .complaint-image {
+            width: 100%;
+
+            max-height: 400px;
+
+            object-fit: cover;
+
+            border-radius: 17px;
+
+            display: block;
+
+            border:
+                1px solid #e5e7eb;
+
+            transition: 0.3s;
+        }
+
+
+        .complaint-image:hover {
+            transform: scale(1.01);
+
+            box-shadow:
+                0 15px 30px rgba(15,23,42,0.15);
+        }
+
+
+        /* =========================
+           REMARK
+           ========================= */
+
+        .remark {
+            background: #f8fafc;
+
+            border-radius: 15px;
+
+            padding: 15px;
+
+            margin-bottom: 12px;
+
+            border:
+                1px solid #edf0f5;
+        }
+
+
+        .remark-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .remark-author {
+            font-weight: 700;
+
+            font-size: 13px;
+
+            color: #334155;
+        }
+
+
+        .remark-date {
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+
+        .remark-text {
+            color: #64748b;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        .empty {
+            text-align: center;
+
+            padding: 25px;
+
+            color: #94a3b8;
+
+            background: #f8fafc;
+
+            border-radius: 15px;
+        }
+
+
+        /* =========================
+           FOOTER
+           ========================= */
+
+        footer {
+            text-align: center;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+
+            padding: 10px 0 25px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+           ========================= */
+
+        @media (max-width: 900px) {
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-top {
+                flex-direction: column;
+            }
+
+            .badges {
+                justify-content: flex-start;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .topbar {
+                padding: 0 18px;
+            }
+
+            .brand {
+                font-size: 21px;
+            }
+
+            .user-pill span {
+                display: none;
+            }
+
+            .page {
+                padding: 22px 14px 40px;
+            }
+
+            .hero {
+                padding: 22px;
+            }
+
+            .hero h1 {
+                font-size: 25px;
+            }
+
+            .info-grid,
+            .assignment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress {
+                overflow-x: auto;
+                gap: 12px;
+            }
+
+            .step {
+                min-width: 85px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     TOP BAR
+     ========================= -->
+
+<header class="topbar">
+
+    <div class="brand">
+        Civic<span>Connect</span>
+    </div>
+
+
+    <div class="topbar-right">
+
+        <div class="user-pill">
+
+            <div class="user-avatar">
+                {{ (current_user.name[0] if current_user.name else "U")|upper }}
+            </div>
+
+            <span>
+                {{ current_user.name }}
+            </span>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<main class="page">
+
+
+    <!-- =========================
+         BACK
+         ========================= -->
+
+    <a href="{{ url_for('citizen_dashboard') }}"
+       class="back-btn">
+
+        ← Back to My Complaints
+
+    </a>
+
+
+
+    <!-- =========================
+         HERO
+         ========================= -->
+
+    <section class="hero">
+
+        <div class="hero-top">
+
+
+            <div>
+
+                <div class="complaint-label">
+                    Civic Complaint
+                </div>
+
+                <h1>
+                    {{ complaint.title }}
+                </h1>
+
+                <div class="complaint-id">
+                    Complaint #{{ complaint.id }}
+                    •
+                    {{ complaint.issue_type }}
+                </div>
+
+            </div>
+
+
+            <div class="badges">
+
+
+                {% if complaint.status == "Resolved" %}
+
+                    <span class="badge status-resolved">
+                        ✓ Resolved
+                    </span>
+
+                {% elif complaint.status == "Closed" %}
+
+                    <span class="badge status-closed">
+                        ✓ Closed
+                    </span>
+
+                {% elif complaint.status == "In Progress" %}
+
+                    <span class="badge status-progress">
+                        ↻ In Progress
+                    </span>
+
+                {% elif complaint.status == "Assigned" %}
+
+                    <span class="badge status-assigned">
+                        ● Assigned
+                    </span>
+
+                {% else %}
+
+                    <span class="badge status-pending">
+                        ◷ Pending
+                    </span>
+
+                {% endif %}
+
+
+                {% if complaint.priority == "High" %}
+
+                    <span class="badge priority-high">
+                        ⚠ High Priority
+                    </span>
+
+                {% elif complaint.priority == "Low" %}
+
+                    <span class="badge priority-low">
+                        Low Priority
+                    </span>
+
+                {% else %}
+
+                    <span class="badge priority-medium">
+                        Medium Priority
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             PROGRESS
+             ========================= -->
+
+        <div class="progress-card">
+
+            <div class="progress-title">
+                Complaint Progress
+            </div>
+
+
+            <div class="progress">
+
+
+                {% set statuses = [
+                    "Pending",
+                    "Assigned",
+                    "In Progress",
+                    "Resolved",
+                    "Closed"
+                ] %}
+
+
+                {% set current_index = statuses.index(complaint.status)
+                   if complaint.status in statuses else 0 %}
+
+
+                {% for step in statuses %}
+
+                    {% set step_index = loop.index0 %}
+
+
+                    <div class="
+                        step
+                        {% if step_index < current_index %}
+                            done
+                        {% elif step_index == current_index %}
+                            active
+                        {% endif %}
+                    ">
+
+                        <div class="step-circle">
+
+                            {% if step_index < current_index %}
+                                ✓
+                            {% else %}
+                                {{ loop.index }}
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="step-text">
+                            {{ step }}
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         MAIN GRID
+         ========================= -->
+
+    <div class="main-grid">
+
+
+        <!-- =========================
+             LEFT COLUMN
+             ========================= -->
+
+        <div>
+
+
+            <!-- DESCRIPTION -->
+
+            <section class="card">
+
+                <div class="card-header">
+
+                    <div class="icon-box">
+                        📝
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Issue Description
+                        </h2>
+
+                        <p>
+                            Details provided with your complaint
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="description">
+
+                    {{ complaint.description }}
+
+                </div>
+
+            </section>
+
+
+
+            <!-- LOCATION -->
+
+            <section class="card">
+
+                <div class="card-header">
+
+                    <div class="icon-box">
+                        📍
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Location
+                        </h2>
+
+                        <p>
+                            Reported location of the issue
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="location-box">
+
+                    <div class="location-icon">
+                        📍
+                    </div>
+
+                    <div>
+
+                        <div class="info-label">
+                            Reported Location
+                        </div>
+
+                        <div class="location-text">
+                            {{ complaint.location }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ACTIVITY -->
+
+            <section class="card">
+
+                <div class="card-header">
+
+                    <div class="icon-box">
+                        🕒
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Activity & Remarks
+                        </h2>
+
+                        <p>
+                            Complaint updates and officer remarks
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="timeline">
+
+
+                    <!-- REPORT -->
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-dot">
+                            ✓
+                        </div>
+
+                        <div class="timeline-content">
+
+                            <strong>
+                                Complaint Reported
+                            </strong>
+
+                            <div class="timeline-time">
+
+                                {{ complaint.created_at.strftime("%d %b %Y, %I:%M %p") }}
+
+                            </div>
+
+                            <div class="timeline-message">
+
+                                Complaint was submitted by
+                                <strong>
+                                    {{ complaint.citizen.name }}
+                                </strong>.
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- REMARKS -->
+
+                    {% for remark in remarks %}
+
+                        <div class="timeline-item">
+
+                            <div class="timeline-dot">
+                                💬
+                            </div>
+
+                            <div class="timeline-content">
+
+                                <strong>
+                                    Officer Update
+                                </strong>
+
+                                <div class="timeline-time">
+
+                                    {{ remark.created_at.strftime("%d %b %Y, %I:%M %p") }}
+
+                                </div>
+
+                                <div class="timeline-message">
+
+                                    {{ remark.remark }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+
+                    {% if not remarks %}
+
+                        <div class="empty">
+
+                            💬
+                            <br><br>
+
+                            No remarks have been added yet.
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             RIGHT COLUMN
+             ========================= -->
+
+        <div>
+
+
+            <!-- ASSIGNMENT -->
+
+            <section class="card assignment">
+
+                <div class="card-header">
+
+                    <div class="icon-box">
+                        🏢
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Assignment
+                        </h2>
+
+                        <p>
+                            Complaint routing information
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="assignment-grid">
+
+
+                    <div class="assignment-item">
+
+                        <span>
+                            Department
+                        </span>
+
+                        <strong>
+
+                            {% if complaint.department %}
+
+                                {{ complaint.department.name }}
+
+                            {% else %}
+
+                                Not Assigned
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="assignment-item">
+
+                        <span>
+                            Assigned Officer
+                        </span>
+
+                        <strong>
+
+                            {% if complaint.assigned_officer %}
+
+                                {{ complaint.assigned_officer.name }}
+
+                            {% else %}
+
+                                Not Assigned
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="assignment-item">
+
+                        <span>
+                            Submitted
+                        </span>
+
+                        <strong>
+
+                            {{ complaint.created_at.strftime("%d %b %Y") }}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="assignment-item">
+
+                        <span>
+                            Last Updated
+                        </span>
+
+                        <strong>
+
+                            {{ complaint.updated_at.strftime("%d %b %Y") }}
+
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- REPORTED BY -->
+
+            <section class="card">
+
+                <div class="card-header">
+
+                    <div class="icon-box">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Reported By
+                        </h2>
+
+                        <p>
+                            Citizen information
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-card">
+
+                    <div class="big-avatar">
+
+                        {{ (complaint.citizen.name[0]
+                            if complaint.citizen.name
+                            else "U")|upper }}
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="profile-name">
+
+                            {{ complaint.citizen.name }}
+
+                        </div>
+
+                        <div class="profile-email">
+
+                            {{ complaint.citizen.email }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- QUICK DETAILS -->
+
+            <section class="card">
+
+                <div class="card-header">
+
+                    <div class="icon-box">
+                        ℹ️
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Complaint Details
+                        </h2>
+
+                        <p>
+                            Additional information
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-grid">
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Issue Type
+                        </div>
+
+                        <div class="info-value">
+                            {{ complaint.issue_type }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Priority
+                        </div>
+
+                        <div class="info-value">
+                            {{ complaint.priority }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Status
+                        </div>
+
+                        <div class="info-value">
+                            {{ complaint.status }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Complaint ID
+                        </div>
+
+                        <div class="info-value">
+                            #{{ complaint.id }}
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- IMAGE -->
+
+            {% if complaint.image %}
+
+                <section class="card">
+
+                    <div class="card-header">
+
+                        <div class="icon-box">
+                            🖼️
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Complaint Evidence
+                            </h2>
+
+                            <p>
+                                Image uploaded with the complaint
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='uploads/' + complaint.image
+                        ) }}"
+                        alt="Complaint Image"
+                        class="complaint-image"
+                    >
+
+                </section>
+
+            {% endif %}
+
+
+        </div>
+
+
+    </div>
+
+
+</main>
+
+
+
+<footer>
+
+    CivicConnect © 2026
+    <br>
+    Smart Public Issue Reporting & Tracking System
+
+</footer>
+
+
+</body>
+
+</html>

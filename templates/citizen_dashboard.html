@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CivicConnect - Citizen Dashboard</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        body {
+            background: #f5f6fa;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            width: 250px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #172033;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+            padding-left: 10px;
+            margin-bottom: 35px;
+        }
+
+        .brand span {
+            color: #6c63ff;
+        }
+
+        .sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #d7dbea;
+            padding: 13px 15px;
+            border-radius: 10px;
+            margin: 6px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #6c63ff;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h2 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .welcome {
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+            height: 100%;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-icon {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .stat-title {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .complaint-card {
+            border: 1px solid #e8e8e8;
+            border-radius: 13px;
+            padding: 18px;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+
+        .complaint-card:hover {
+            box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .complaint-title {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .complaint-id {
+            color: #888;
+            font-size: 13px;
+        }
+
+        .complaint-location {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .badge-status {
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-assigned {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-progress {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .status-resolved,
+        .status-closed {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .priority-high {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .priority-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .priority-low {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .empty-box {
+            text-align: center;
+            padding: 45px 20px;
+            color: #777;
+        }
+
+        .empty-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .report-btn {
+            background: #6c63ff;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 20px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .report-btn:hover {
+            background: #574fd6;
+            color: white;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                left: -250px;
+                transition: 0.3s;
+                z-index: 1000;
+            }
+
+            .sidebar.show {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .mobile-menu-btn {
+                display: inline-block;
+            }
+
+            .topbar {
+                padding: 15px;
+            }
+
+            .topbar h2 {
+                font-size: 20px;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<div class="sidebar" id="sidebar">
+
+    <div class="brand">
+        Civic<span>Connect</span>
+    </div>
+
+
+    <a
+        href="{{ url_for('citizen_dashboard') }}"
+        class="active">
+
+        🏠 Dashboard
+
+    </a>
+
+
+    <a href="{{ url_for('create_complaint') }}">
+
+        📝 Report Problem
+
+    </a>
+
+
+    <a href="#complaints">
+
+        📋 My Complaints
+
+    </a>
+
+
+    <a href="{{ url_for('index') }}">
+
+        🌐 Home
+
+    </a>
+
+
+    <a href="{{ url_for('logout') }}">
+
+        🚪 Logout
+
+    </a>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<div class="main-content">
+
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+        <div>
+
+            <button
+                class="btn btn-dark mobile-menu-btn"
+                onclick="toggleSidebar()">
+
+                ☰
+
+            </button>
+
+
+            <h2 class="d-inline-block ms-2">
+
+                Citizen Dashboard
+
+            </h2>
+
+
+            <div class="welcome ms-2">
+
+                Welcome back, {{ current_user.name }} 👋
+
+            </div>
+
+        </div>
+
+
+        <div class="user-name">
+
+            👤 {{ current_user.name }}
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         FLASH MESSAGES
+    ================================================= -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div
+                    class="alert alert-{{ category }} alert-dismissible fade show"
+                    role="alert">
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                    </button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =================================================
+         REPORT BUTTON
+    ================================================= -->
+
+    <div class="mb-4">
+
+        <a
+            href="{{ url_for('create_complaint') }}"
+            class="report-btn">
+
+            ➕ Report a New Problem
+
+        </a>
+
+    </div>
+
+
+    <!-- =================================================
+         STATISTICS
+    ================================================= -->
+
+    <div class="row g-4">
+
+
+        <!-- TOTAL -->
+
+        <div class="col-6 col-lg-3">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📋
+                </div>
+
+                <div class="stat-title">
+                    Total Complaints
+                </div>
+
+                <div class="stat-number">
+                    {{ total }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PENDING -->
+
+        <div class="col-6 col-lg-3">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ⏳
+                </div>
+
+                <div class="stat-title">
+                    Pending
+                </div>
+
+                <div class="stat-number">
+                    {{ pending }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- IN PROGRESS -->
+
+        <div class="col-6 col-lg-3">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🔄
+                </div>
+
+                <div class="stat-title">
+                    In Progress
+                </div>
+
+                <div class="stat-number">
+                    {{ progress }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RESOLVED -->
+
+        <div class="col-6 col-lg-3">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ✅
+                </div>
+
+                <div class="stat-title">
+                    Resolved
+                </div>
+
+                <div class="stat-number">
+                    {{ resolved }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         MY COMPLAINTS
+    ================================================= -->
+
+    <div
+        class="section-card"
+        id="complaints">
+
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+            <div class="section-title mb-0">
+
+                My Complaints
+
+            </div>
+
+
+            {% if complaints %}
+
+                <span class="text-muted">
+
+                    {{ total }} complaint(s)
+
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <hr>
+
+
+        {% if complaints %}
+
+
+            {% for complaint in complaints %}
+
+                <div class="complaint-card">
+
+
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+
+
+                        <div>
+
+                            <div class="complaint-title">
+
+                                {{ complaint.title }}
+
+                            </div>
+
+
+                            <div class="complaint-id">
+
+                                Complaint #{{ complaint.id }}
+
+                            </div>
+
+
+                            <div class="complaint-location">
+
+                                📍 {{ complaint.location }}
+
+                            </div>
+
+
+                            <div class="mt-2">
+
+                                <small class="text-muted">
+
+                                    Issue Type:
+                                    {{ complaint.issue_type }}
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="text-md-end">
+
+
+                            <!-- STATUS -->
+
+                            {% if complaint.status == "Pending" %}
+
+                                <span class="badge badge-status status-pending">
+                                    Pending
+                                </span>
+
+                            {% elif complaint.status == "Assigned" %}
+
+                                <span class="badge badge-status status-assigned">
+                                    Assigned
+                                </span>
+
+                            {% elif complaint.status == "In Progress" %}
+
+                                <span class="badge badge-status status-progress">
+                                    In Progress
+                                </span>
+
+                            {% elif complaint.status == "Resolved" %}
+
+                                <span class="badge badge-status status-resolved">
+                                    Resolved
+                                </span>
+
+                            {% elif complaint.status == "Closed" %}
+
+                                <span class="badge badge-status status-closed">
+                                    Closed
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+                                    {{ complaint.status }}
+                                </span>
+
+                            {% endif %}
+
+
+                            <!-- PRIORITY -->
+
+                            {% if complaint.priority == "High" %}
+
+                                <span class="badge badge-status priority-high">
+                                    High Priority
+                                </span>
+
+                            {% elif complaint.priority == "Medium" %}
+
+                                <span class="badge badge-status priority-medium">
+                                    Medium
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-status priority-low">
+                                    Low
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- COMPLAINT DETAILS -->
+
+                    <div class="row mt-3">
+
+
+                        <div class="col-md-4">
+
+                            <small class="text-muted">
+                                Department
+                            </small>
+
+                            <div>
+
+                                {% if complaint.department %}
+
+                                    {{ complaint.department.name }}
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        Not assigned
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <small class="text-muted">
+                                Assigned Officer
+                            </small>
+
+                            <div>
+
+                                {% if complaint.assigned_officer %}
+
+                                    {{ complaint.assigned_officer.name }}
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        Not assigned
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <small class="text-muted">
+                                Submitted
+                            </small>
+
+                            <div>
+
+                                {% if complaint.created_at %}
+
+                                    {{ complaint.created_at.strftime('%d %b %Y, %I:%M %p') }}
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ACTION -->
+
+                    <div class="mt-3">
+
+                        <a
+                            href="{{ url_for('complaint_details', complaint_id=complaint.id) }}"
+                            class="btn btn-sm btn-outline-primary">
+
+                            View Complaint →
+
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+            {% endfor %}
+
+
+        {% else %}
+
+
+            <div class="empty-box">
+
+                <div class="empty-icon">
+                    📭
+                </div>
+
+                <h5>
+                    No complaints yet
+                </h5>
+
+                <p>
+                    You haven't reported any public issue yet.
+                </p>
+
+
+                <a
+                    href="{{ url_for('create_complaint') }}"
+                    class="report-btn">
+
+                    Report Your First Problem
+
+                </a>
+
+            </div>
+
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =================================================
+         FOOTER
+    ================================================= -->
+
+    <div class="text-center text-muted py-4">
+
+        <small>
+
+            CivicConnect ©
+            <span id="currentYear"></span>
+
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     BOOTSTRAP
+===================================================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+function toggleSidebar() {
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    sidebar.classList.toggle("show");
+
+}
+
+
+document.getElementById(
+    "currentYear"
+).textContent =
+    new Date().getFullYear();
+
+
+/* Close mobile sidebar */
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const button =
+            document.querySelector(".mobile-menu-btn");
+
+
+        if (
+            window.innerWidth <= 700 &&
+            sidebar.classList.contains("show") &&
+            !sidebar.contains(event.target) &&
+            !button.contains(event.target)
+        ) {
+
+            sidebar.classList.remove("show");
+
+        }
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
